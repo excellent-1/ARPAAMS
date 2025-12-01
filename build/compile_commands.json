@@ -1,14 +1,14 @@
 [
 {
   "directory": "C:/Users/nhibb/ARPAAMS_Project/build",
-  "command": "C:\\PROGRA~2\\MICROS~2\\18\\BUILDT~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\nhibb\\ARPAAMS_Project\\_include /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\ARPAAMS.dir\\src\\main.cpp.obj /FdCMakeFiles\\ARPAAMS.dir\\ /FS -c C:\\Users\\nhibb\\ARPAAMS_Project\\src\\main.cpp",
-  "file": "C:/Users/nhibb/ARPAAMS_Project/src/main.cpp",
-  "output": "C:/Users/nhibb/ARPAAMS_Project/build/CMakeFiles/ARPAAMS.dir/src/main.cpp.obj"
-},
-{
-  "directory": "C:/Users/nhibb/ARPAAMS_Project/build",
   "command": "C:\\PROGRA~2\\MICROS~2\\18\\BUILDT~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\nhibb\\ARPAAMS_Project\\_include /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\ARPAAMS.dir\\src\\BeamformingStrategy.cpp.obj /FdCMakeFiles\\ARPAAMS.dir\\ /FS -c C:\\Users\\nhibb\\ARPAAMS_Project\\src\\BeamformingStrategy.cpp",
   "file": "C:/Users/nhibb/ARPAAMS_Project/src/BeamformingStrategy.cpp",
   "output": "C:/Users/nhibb/ARPAAMS_Project/build/CMakeFiles/ARPAAMS.dir/src/BeamformingStrategy.cpp.obj"
+},
+{
+  "directory": "C:/Users/nhibb/ARPAAMS_Project/build",
+  "command": "C:\\PROGRA~2\\MICROS~2\\18\\BUILDT~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\nhibb\\ARPAAMS_Project\\_include /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\ARPAAMS.dir\\src\\main.cpp.obj /FdCMakeFiles\\ARPAAMS.dir\\ /FS -c C:\\Users\\nhibb\\ARPAAMS_Project\\src\\main.cpp",
+  "file": "C:/Users/nhibb/ARPAAMS_Project/src/main.cpp",
+  "output": "C:/Users/nhibb/ARPAAMS_Project/build/CMakeFiles/ARPAAMS.dir/src/main.cpp.obj"
 }
 ]

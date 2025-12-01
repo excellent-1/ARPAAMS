@@ -21,7 +21,7 @@
 			{
 				"command" : 1,
 				"file" : 2,
-				"line" : 27,
+				"line" : 29,
 				"parent" : 0
 			},
 			{
@@ -55,8 +55,8 @@
 	{
 		"name" : "CTestDashboardTargets"
 	},
-	"id" : "NightlyTest::@6890427a1f51a3e7e1df",
-	"name" : "NightlyTest",
+	"id" : "ContinuousCoverage::@6890427a1f51a3e7e1df",
+	"name" : "ContinuousCoverage",
 	"paths" : 
 	{
 		"build" : ".",
@@ -84,13 +84,13 @@
 		{
 			"backtrace" : 5,
 			"isGenerated" : true,
-			"path" : "build/CMakeFiles/NightlyTest",
+			"path" : "build/CMakeFiles/ContinuousCoverage",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/CMakeFiles/NightlyTest.rule",
+			"path" : "build/CMakeFiles/ContinuousCoverage.rule",
 			"sourceGroupIndex" : 1
 		}
 	],

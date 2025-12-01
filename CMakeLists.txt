@@ -12,13 +12,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_DIR src)
 set(INCLUDE_DIR _include)
 
-# Add source files FIRST (creates the target)
-add_executable(ARPAAMS
-    ${SOURCE_DIR}/main.cpp
-    ${SOURCE_DIR}/BeamformingStrategy.cpp
+# Gather all .cpp files in src automatically
+file(GLOB SOURCES
+    ${SOURCE_DIR}/*.cpp
 )
 
-# Now add include directories to the target
+# Create executable
+add_executable(ARPAAMS ${SOURCES})
+
+# Add include directory
 target_include_directories(ARPAAMS PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/${INCLUDE_DIR}
 )
