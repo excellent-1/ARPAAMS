@@ -1,3 +1,5 @@
+# Sequence Diagram for Beamforming  
+
 @startuml
 actor Operator
 Operator -> BeamformingEngine: setStrategy(strategy)
