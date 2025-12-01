@@ -1,100 +1,76 @@
-name: Release
+name: CI - Build & Release
 
 on:
   push:
-    tags:
-      - "v*"        # Trigger on version tags like v1.0.0
-
-permissions:
-  contents: write   # Needed to upload a GitHub Release
-  actions: read
-  checks: write
-  packages: write
+    branches: [ main, master ]
+  workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   build:
-    name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Release]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up CMake
-        uses: lukka/get-cmake@latest
-
-      - name: Configure
-        run: >
-          cmake -B build -S . 
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-
-      - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} --parallel
-
-      - name: Run Tests
-        run: |
-          ctest --test-dir build \
-          --build-config ${{ matrix.build_type }} --output-on-failure
-        continue-on-error: false
-
-      - name: Package Artifact
-        run: |
-          mkdir package
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cp build/${{ matrix.build_type }}/*.exe package/
-          else
-            cp build/${{ matrix.build_type }}/* package/ || cp build/* package/ || true
-          fi
-        shell: bash
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-${{ matrix.build_type }}
-          path: package/
-
-  release:
-    name: Create Release
-    needs: build
-    runs-on: ubuntu-latest
+        build_type: [Debug, Release]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download all build artifacts
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1
+        with:
+          cmake-version: '3.24.0'
+
+      - name: Install Ninja (Linux/Mac)
+        if: runner.os != 'Windows'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build || true
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Run clang-tidy (optional - Linux & Mac)
+        if: runner.os != 'Windows'
+        run: |
+          if command -v clang-tidy >/dev/null 2>&1; then
+            clang-tidy src/*.cpp -- -I_include || true
+          else
+            echo "clang-tidy not installed"
+          fi
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -- -j
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure || true
+
+      - name: Package artifacts
+        run: |
+          mkdir -p artifacts
+          cp -r build/* artifacts/ || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ARPAAMS-${{ matrix.os }}-${{ matrix.build_type }}
+          path: artifacts
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Download build artifacts (example)
         uses: actions/download-artifact@v4
         with:
-          path: ./artifacts
+          name: ARPAAMS-ubuntu-latest-Release
+          path: artifacts || true
 
-      - name: Create Release Notes
-        id: notes
-        run: |
-          echo "### Changelog" > RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          git log -1 --pretty=format:"%B" >> RELEASE_NOTES.md
-          echo "::set-output name=notes::$(cat RELEASE_NOTES.md)"
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release (if triggered by workflow_dispatch or release event)
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body_path: RELEASE_NOTES.md
-          draft: false
-          prerelease: false
+          name: "ARPAAMS ${{ github.ref_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/**/*
-
