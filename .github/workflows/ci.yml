@@ -22,3 +22,6 @@ jobs:
 
       - name: Run tests
         run: ctest --preset test --output-on-failure
+
+      - name: Run static analysis
+        run: clang-tidy src/*.cpp -- -I_include
