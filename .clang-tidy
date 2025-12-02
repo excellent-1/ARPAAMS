@@ -5,3 +5,6 @@ Checks: >
   performance-*,
   modernize-*,
   bugprone-*
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
