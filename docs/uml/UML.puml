@@ -1,0 +1,39 @@
+@startuml ARPAAMS Architecture UML
+skinparam handwritten true
+
+package "Patterns" {
+  class RFPayloadMonitor
+  class IFaultObserver
+  class RecoveryModule
+  IFaultObserver <|.. RecoveryModule
+  RFPayloadMonitor o-- IFaultObserver : registers
+
+  class ICommand
+  class AllocatePowerCommand
+  class FrequencySwitchCommand
+  class ResourceManager
+  ICommand <|.. AllocatePowerCommand
+  ICommand <|.. FrequencySwitchCommand
+  ResourceManager *-- ICommand : queue
+}
+
+package "FPGA" {
+  interface IFPGAController
+  interface IFPGARegisterMap
+  class IFPGAFactory
+  class XilinxControllerWithTransport
+  class AlteraControllerWithTransport
+  IFPGAController <|.. XilinxControllerWithTransport
+  IFPGAController <|.. AlteraControllerWithTransport
+  IFPGAFactory ..> IFPGAController
+  IFPGAFactory ..> IFPGARegisterMap
+}
+
+package "Transport" {
+  interface ITransportSPI
+  interface ITransportI2C
+  XilinxControllerWithTransport o-- ITransportSPI
+  AlteraControllerWithTransport o-- ITransportI2C
+}
+
+@enduml
