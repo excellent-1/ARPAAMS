@@ -2,35 +2,44 @@ name: CodeQL
 
 on:
   push:
-    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]
   schedule:
     - cron: '0 0 * * 0'
 
 jobs:
   analyze:
-    name: Analyze (CodeQL)
     runs-on: ubuntu-latest
     permissions:
+      security-events: write
       actions: read
       contents: read
-      security-events: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ clang
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: cpp
+          build-mode: manual
 
-      - name: Build
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build cmake
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
-          cmake --build build --config Release -- -j
+      # -------------------------------
+      # CORRECTED BUILD STEPS FOR CODEQL
+      # -------------------------------
+      - name: Configure CMake
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 
-      - name: Run CodeQL analysis
+      - name: Build Project
+        run: cmake --build build -- -j4
+
+      # -------------------------------
+      # RUN CODEQL ANALYSIS
+      # -------------------------------
+      - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
