@@ -2,11 +2,10 @@
 
 on:
   push:
-    tags:
-      - 'v*'        # release tags like v1.0.0
+    branches: [ main, master ]
+  workflow_dispatch:
   release:
     types: [created]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -14,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Release]
+        build_type: [Debug, Release]
 
     steps:
       - name: Checkout
@@ -25,50 +24,53 @@ jobs:
         with:
           cmake-version: '3.24.0'
 
-      - name: Install tools (Linux)
-        if: runner.os == 'Linux'
+      - name: Install Ninja (Linux/Mac)
+        if: runner.os != 'Windows'
         run: sudo apt-get update && sudo apt-get install -y ninja-build
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=17
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
-      - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} -- -j
-
-      - name: Run tests (best effort)
+      - name: Run clang-tidy (optional - Linux & Mac)
+        if: runner.os != 'Windows'
         run: |
-          if [ -f build/CTestTestfile.cmake ]; then
-            ctest --test-dir build --output-on-failure || true
+          if command -v clang-tidy >/dev/null 2>&1; then
+            clang-tidy src/*.cpp -- -I_include || true
           else
-            echo "No tests configured"
+            echo "clang-tidy not installed"
           fi
 
-      - name: Create zip artifact
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }}
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure || true
+
+      - name: Package artifacts
         run: |
           mkdir -p artifacts
-          tar -czf artifacts/${{ matrix.os }}-${{ matrix.build_type }}.tar.gz -C build .
+          cp -r build/* artifacts/ || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ARPAAMS-${{ matrix.os }}-${{ matrix.build_type }}
-          path: artifacts/${{ matrix.os }}-${{ matrix.build_type }}.tar.gz
+          path: artifacts
 
   create-release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'release' || github.ref == 'refs/heads/main'
     steps:
-      - name: Download artifacts (example Linux Release)
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: ARPAAMS-ubuntu-latest-Release
-          path: artifacts || true
+          path: artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           name: "ARPAAMS ${{ github.ref_name }}"
-          tag_name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
