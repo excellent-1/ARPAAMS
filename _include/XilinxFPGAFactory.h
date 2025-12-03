@@ -18,6 +18,6 @@ class XilinxFPGAFactory : public IFPGAFactory {
 public:
     std::unique_ptr<IFPGAController> createController() override;
     std::unique_ptr<IFPGARegisterMap> createRegisterMap() override;
-  //Will be included in Command Pattern commit
-  //  std::unique_ptr<IFPGAController> createControllerWithTransport(std::unique_ptr<ITransportSPI> t, IFPGARegisterMap* map);
+  
+    std::unique_ptr<IFPGAController> createControllerWithTransport(std::unique_ptr<ITransportSPI> t, IFPGARegisterMap* map);
 };
