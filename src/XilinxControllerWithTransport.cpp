@@ -21,4 +21,4 @@ bool XilinxControllerWithTransport::readRegister(uint32_t addr, uint32_t& value)
 bool XilinxControllerWithTransport::sendPacket(const std::vector<uint8_t>& packet) {
     std::vector<uint8_t> rx;
     return spi->transfer(packet, rx);
-}
+} // 

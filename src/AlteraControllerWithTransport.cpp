@@ -17,4 +17,4 @@ bool AlteraControllerWithTransport::readRegister(uint32_t addr, uint32_t& value)
 }
 bool AlteraControllerWithTransport::sendPacket(const std::vector<uint8_t>& packet) {
     return i2c->write(0x50, packet);
-}
+} // 

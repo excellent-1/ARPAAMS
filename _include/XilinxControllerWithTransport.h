@@ -13,4 +13,5 @@ public:
     bool writeRegister(uint32_t addr, uint32_t value) override;
     bool readRegister(uint32_t addr, uint32_t& value) override;
     bool sendPacket(const std::vector<uint8_t>& packet) override;
-};
+}; //
+ 
