@@ -1,7 +1,7 @@
 #pragma once
 #include "IFPGAFactory.h"
-//#include "XilinxControllerWithTransport.h" // Will be included in Command Pattern commit
-//#include "TransportSPI.h" // Will be included in Command Pattern commit
+#include "XilinxControllerWithTransport.h" // Will be included in Command Pattern commit
+#include "TransportSPI.h" // Will be included in Command Pattern commit
 #include <memory>
 #include <unordered_map>
 #include <mutex>

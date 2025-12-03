@@ -1,3 +1,21 @@
+/*
+#include "XilinxFPGAFactory.h"
+#include "IFPGAController.h"
+
+std::unique_ptr<IFPGAController> XilinxFPGAFactory::createController() {
+    return nullptr; // TODO: implement when Xilinx controller exists
+}
+
+std::unique_ptr<IFPGAController> 
+XilinxFPGAFactory::createControllerWithTransport(
+    std::unique_ptr<void> , //transport
+    IFPGARegisterMap* //map
+) {
+    return nullptr; // TODO
+}
+*/
+
+
 #include "XilinxFPGAFactory.h"
 
 void XilinxRegisterMap::set(uint32_t addr, uint32_t value) {
